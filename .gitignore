@@ -1,0 +1,9 @@
+/venv
+*.pyc
+/build
+/dist
+/jaxdl.egg-info
+**/__pycache__
+events.*
+/tmp/**
+setup.py
