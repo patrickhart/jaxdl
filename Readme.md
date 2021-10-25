@@ -22,12 +22,11 @@ If you use JAXDL in your work, please cite this repository as follows:
 ## Results / Benchmark
 
 ### Continous Control From States
-
 | HalfCheetah-v2 | Ant-v2 |
 | --- | --- |
-| ![HalfCheetah-v2](utils/learning_curves/HalfCheetah-v2.png) | ![Ant-v2](utils/learning_curves/Ant-v2.png) |
+| ![HalfCheetah-v2](https://raw.githubusercontent.com/patrickhart/jaxdl/master/utils/learning_curves/HalfCheetah-v2.png) | ![Ant-v2](https://raw.githubusercontent.com/patrickhart/jaxdl/master/utils/learning_curves/Ant-v2.png) |
 | Reacher-v2 | Humanoid-v2 |
-| ![Reacher-v2](utils/learning_curves/Reacher-v2.png) | ![Humanoid-v2](utils/learning_curves/Humanoid-v2.png) |
+| ![Reacher-v2](https://raw.githubusercontent.com/patrickhart/jaxdl/master/utils/learning_curves/Reacher-v2.png) | ![Humanoid-v2](https://raw.githubusercontent.com/patrickhart/jaxdl/master/utils/learning_curves/Humanoid-v2.png) |
 
 
 ## Installation
