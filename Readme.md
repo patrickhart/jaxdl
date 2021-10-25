@@ -12,6 +12,7 @@ If you use JAXDL in your work, please cite this repository as follows:
 @misc{jaxdl,
   author = {Hart, Patrick},
   month = {10},
+  doi = {10.5281/zenodo.5596512},
   title = {{JAXDL: JAX Deep Learning Algorithm Implementations.}},
   url = {https://github.com/patrickhart/jaxdl},
   year = {2021}
