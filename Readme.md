@@ -48,7 +48,8 @@ To train a reinforcement learning agent run
 python examples/run_rl.py \
   --mode=train \
   --env_name=Ant-v2 \
-  --save_dir=./tmp/
+  --save_dir=./tmp/ \
+  --config=./examples/configs/sac_config.py
 ```
 
 To visualize the trained agent use
@@ -57,7 +58,8 @@ To visualize the trained agent use
 python examples/run_rl.py \
   --mode=visualize \
   --env_name=Ant-v2 \
-  --save_dir=./tmp/
+  --save_dir=./tmp/ \
+  --config=./examples/configs/sac_config.py
 ```
 
 

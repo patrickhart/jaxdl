@@ -1,6 +1,6 @@
 """Actor network implementations"""
 import functools
-from typing import Optional, Sequence, Tuple
+from typing import Callable, Optional, Sequence, Tuple
 
 import numpy as np
 import flax.linen as nn
@@ -11,11 +11,12 @@ tfb = tfp.bijectors
 tfd = tfp.distributions
 
 from jaxdl.utils.commons import PRNGKey, Module, TrainState
-from jaxdl.nn.dnn.mlp import MLP, default_init
+from jaxdl.nn.dnn.mlp import default_init, forward_mlp_fn
 
 
 def create_normal_dist_policy_fn(
-  hidden_dims : Sequence[int] = [256, 256], action_dim: int = 2) -> Module:
+  hidden_dims : Sequence[int] = [256, 256],
+  forward_fn: Callable = forward_mlp_fn) -> Callable:
   """Return a normal distribution actor policy
 
   Args:
@@ -27,7 +28,12 @@ def create_normal_dist_policy_fn(
   Returns:
     Module: Returns a NormalDistPolicy
   """
-  return NormalDistPolicy(hidden_dims=hidden_dims, action_dim=action_dim)
+  def network_fn(action_dim: int):
+    return NormalDistPolicy(hidden_dims=hidden_dims,
+      action_dim=action_dim, forward_fn=forward_fn)
+
+  return network_fn
+
 
 class NormalDistPolicy(nn.Module):
   """Normal distribution actor policy."""
@@ -37,6 +43,7 @@ class NormalDistPolicy(nn.Module):
   log_std_min: float = -10.0
   log_std_max: float = 2.0
   tanh_squash_distribution: bool = True
+  forward_fn: Callable = forward_mlp_fn
   dropout_rate: Optional[float] = None
 
   @nn.compact
@@ -54,14 +61,18 @@ class NormalDistPolicy(nn.Module):
     Returns:
       tfd.Distribution: Tensorflow probability distribution
     """
+
     # call networks
-    mlp_forward = MLP(self.hidden_dims, activate_final=True,
-      dropout_rate=self.dropout_rate)(observations, training=training)
-    means = nn.Dense(self.action_dim, kernel_init=default_init())(mlp_forward)
+    out = self.forward_fn(
+      hidden_dims=self.hidden_dims, dropout_rate=self.dropout_rate,
+      activate_final=True)(observations, training=training)
+
+    # means
+    means = nn.Dense(self.action_dim, kernel_init=default_init())(out)
 
     # log standard deviations
     log_stds = nn.Dense(self.action_dim,
-      kernel_init=default_init(self.log_std_scale))(mlp_forward)
+      kernel_init=default_init(self.log_std_scale))(out)
 
     # clip log standard deviations
     log_stds = jnp.clip(log_stds, self.log_std_min, self.log_std_max)

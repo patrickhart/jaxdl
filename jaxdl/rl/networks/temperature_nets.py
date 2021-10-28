@@ -1,11 +1,13 @@
 """Temperature network implementations"""
+from typing import Callable
+
 import jax.numpy as jnp
 from flax import linen as nn
 
 from jaxdl.utils.commons import PRNGKey, Module
 
 
-def create_temperature_network_fn(temperature: float = 1.0) -> Module:
+def create_temperature_network_fn(temperature: float = 1.0) -> Callable:
   """Returns a temperature network
 
   Args:
@@ -14,7 +16,9 @@ def create_temperature_network_fn(temperature: float = 1.0) -> Module:
   Returns:
       Module: Temperature network
   """
-  return Temperature(temperature=temperature)
+  def network_fn():
+    return Temperature(temperature=temperature)
+  return network_fn
 
 class Temperature(nn.Module):
   """Temperature network."""

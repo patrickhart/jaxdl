@@ -6,6 +6,18 @@ import jax.numpy as jnp
 def default_init(scale: Optional[float] = jnp.sqrt(2)):
   return nn.initializers.orthogonal(scale)
 
+def forward_mlp_fn(
+  hidden_dims: Sequence[int], dropout_rate: Optional[float] = None,
+  activations=nn.relu, activate_final=False):
+
+  def fn(observations: jnp.ndarray, training: bool = False):
+    return MLP(hidden_dims, activate_final=activate_final,
+      dropout_rate=dropout_rate, activations=activations)(
+      observations, training)
+
+  return fn
+
+
 class MLP(nn.Module):
   hidden_dims: Sequence[int]
   activations: Callable[[jnp.ndarray], jnp.ndarray] = nn.relu

@@ -30,8 +30,8 @@ class TD3Agent(RLAgent):
   """
   def __init__(self,
     seed: int,
-    observations: jnp.ndarray,
-    actions: jnp.ndarray,
+    observations: np.ndarray,
+    actions: np.ndarray,
     critic_net_fn: Callable = create_double_critic_network_fn,
     actor_net_fn: Callable = create_normal_dist_policy_fn,
     actor_lr: float = 3e-4,

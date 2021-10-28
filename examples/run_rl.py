@@ -80,6 +80,9 @@ def evaluate(agent: RLAgent, env: gym.Env, num_episodes: int,
   for key, value in evaluation_result.items():
     evaluation_result[key] = np.mean(value)
   evaluation_result['success'] = success_count / num_episodes
+  print(f"The agent achieved an average reward of "
+        f"{evaluation_result['return'].mean()} over"
+        f" {FLAGS.eval_episodes} episodes.")
   return evaluation_result
 
 def train(env: gym.Env, eval_env: gym.Env, replay_buffer_size: int,

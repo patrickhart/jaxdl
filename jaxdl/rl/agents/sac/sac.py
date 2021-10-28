@@ -31,8 +31,8 @@ class SACAgent(RLAgent):
   """
   def __init__(self,
     seed: int,
-    observations: jnp.ndarray,
-    actions: jnp.ndarray,
+    observations: np.ndarray,
+    actions: np.ndarray,
     critic_net_fn: Callable = create_double_critic_network_fn,
     actor_net_fn: Callable = create_normal_dist_policy_fn,
     temperature_net_fn: Callable = create_temperature_network_fn,
