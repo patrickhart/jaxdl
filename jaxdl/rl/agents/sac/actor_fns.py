@@ -29,7 +29,7 @@ def update_actor(rng: PRNGKey, actor_net: TrainState, critic_net: TrainState,
   rng, key = jax.random.split(rng)
   # actor loss
   def actor_loss_fn(actor_params: Params,
-    batch: jnp.ndarray) -> Tuple[jnp.ndarray, InfoDict]:
+    batch: Batch) -> Tuple[jnp.ndarray, InfoDict]:
     # policy
     policy_dist = actor_net.apply_fn(actor_params, batch.observations)
     actions = policy_dist.sample(seed=key)

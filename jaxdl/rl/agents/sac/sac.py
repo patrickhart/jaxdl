@@ -1,5 +1,5 @@
 """SAC-Agent implementation"""
-from typing import Optional
+from typing import Optional, Callable
 
 import jax
 import jax.numpy as jnp
@@ -18,7 +18,6 @@ from jaxdl.rl.utils.replay_buffer import Batch
 from jaxdl.rl.utils.commons import RLAgent
 
 
-
 class SACAgent(RLAgent):
   """An JAX implementation of the Soft-Actor-Critic (SAC)
 
@@ -34,9 +33,9 @@ class SACAgent(RLAgent):
     seed: int,
     observations: jnp.ndarray,
     actions: jnp.ndarray,
-    critic_net_fn: Module = create_double_critic_network_fn,
-    actor_net_fn: Module = create_normal_dist_policy_fn,
-    temperature_net_fn: Module = create_temperature_network_fn,
+    critic_net_fn: Callable = create_double_critic_network_fn,
+    actor_net_fn: Callable = create_normal_dist_policy_fn,
+    temperature_net_fn: Callable = create_temperature_network_fn,
     actor_lr: float = 3e-4,
     critic_lr: float = 3e-4,
     temperature_lr: float = 3e-4,
@@ -90,7 +89,8 @@ class SACAgent(RLAgent):
     self.critic_net = restore_train_state(self.critic_net, path, prefix="critic")
     self.target_critic_net = restore_train_state(
       self.target_critic_net, path, prefix="target_critic")
-    self.temperature_net = restore_train_state(self.temperature_net, path, prefix="temperature")
+    self.temperature_net = restore_train_state(
+      self.temperature_net, path, prefix="temperature")
 
   def save(self, path):
     """Saves the networks of the agents."""

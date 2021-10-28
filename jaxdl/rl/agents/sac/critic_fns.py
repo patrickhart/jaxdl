@@ -65,7 +65,7 @@ def update_critic(
     target_q -= discount * batch.masks * alpha * next_log_probs
 
   def critic_loss_fn(critic_params: Params,
-    batch: jnp.ndarray) -> Tuple[jnp.ndarray, InfoDict]:
+    batch: Batch) -> Tuple[jnp.ndarray, InfoDict]:
     q1, q2 = critic_net.apply_fn(
       critic_params, batch.observations, batch.actions)
     # loss function

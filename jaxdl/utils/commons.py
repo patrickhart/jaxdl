@@ -30,12 +30,11 @@ def create_train_state(model: Module, inputs: Sequence[Any],
     apply_fn=model.apply, params=params, tx=tx)
 
 def restore_train_state(state: TrainState,
-  workdir: str, prefix: str) -> Tuple[Any, InfoDict]:
+  workdir: str, prefix: str) -> TrainState:
   """Restores a trained state"""
   return checkpoints.restore_checkpoint(workdir, state, prefix=prefix)
 
-def save_train_state(state: TrainState,
-  workdir: str, prefix: str) -> None:
+def save_train_state(state: TrainState, workdir: str, prefix: str) -> None:
   """Saves a trained state"""
   if jax.process_index() == 0:
     step = int(state.step)
