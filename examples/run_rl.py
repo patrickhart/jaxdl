@@ -11,6 +11,7 @@ from tensorboardX import SummaryWriter
 from ml_collections import config_flags
 
 from jaxdl.rl.agents.sac.sac import SACAgent
+from jaxdl.rl.agents.td3.td3 import TD3Agent
 from jaxdl.rl.utils.replay_buffer import ReplayBuffer
 from jaxdl.rl.environments.env_wrappers import make_env
 from jaxdl.utils.commons import InfoDict
@@ -50,6 +51,11 @@ def setup_agent(env: gym.Env, config: config_flags):
       env.observation_space.sample()[np.newaxis],
       env.action_space.sample()[np.newaxis], **kwargs)
     return sac_agent
+  elif algorithm == 'TD3':
+    td3_agent = TD3Agent(FLAGS.seed,
+      env.observation_space.sample()[np.newaxis],
+      env.action_space.sample()[np.newaxis], **kwargs)
+    return td3_agent
   else:
     raise NotImplementedError()
 
@@ -62,7 +68,8 @@ def evaluate(agent: RLAgent, env: gym.Env, num_episodes: int,
   for _ in range(num_episodes):
     observation, done = env.reset(), False
     while not done:
-      action = agent.sample(observation, temperature=temperature)
+      action = agent.sample(
+        observation, temperature=temperature, evaluate=True)
       observation, _, done, info = env.step(action)
       if render:
         env.render()
@@ -130,17 +137,18 @@ def train(env: gym.Env, eval_env: gym.Env, replay_buffer_size: int,
 def main(_):
   np.random.seed(FLAGS.seed)
   random.seed(FLAGS.seed)
+  config = dict(FLAGS.config)
 
   # setup logging
   summary_writer = SummaryWriter(
-    os.path.join(FLAGS.save_dir, FLAGS.env_name, str(FLAGS.seed), 'tb'))
+    os.path.join(FLAGS.save_dir, FLAGS.env_name, str(FLAGS.seed),
+      'tb', config['algorithm']))
 
   # make environments
   env = make_env(FLAGS.env_name, FLAGS.seed)
   eval_env = make_env(FLAGS.env_name, FLAGS.eval_seed)
 
   # setup agent
-  config = dict(FLAGS.config)
   checkpoint_dir = os.path.join(
     FLAGS.save_dir, FLAGS.env_name, str(FLAGS.seed),
     'ckpts', config["algorithm"])

@@ -18,8 +18,8 @@ class RLAgent:
     pass
 
   def sample(self, observations: np.ndarray,
-    temperature: float = 1.0) -> jnp.ndarray:
-    pass
+    temperature: float = 1.0, evaluate: bool = False) -> np.ndarray:
+    return observations
 
   def update(self, batch: Batch) -> InfoDict:
     return {}

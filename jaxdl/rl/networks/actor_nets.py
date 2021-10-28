@@ -76,7 +76,6 @@ class NormalDistPolicy(nn.Module):
       return tfd.TransformedDistribution(distribution=dist, bijector=tfb.Tanh())
     return dist
 
-# TODO: use enum if possible
 @functools.partial(jax.jit)
 def sample_actions(
   rng: PRNGKey,
@@ -86,13 +85,13 @@ def sample_actions(
   """Samples actions from a given policy
 
   Args:
-      rng (PRNGKey): RNG
-      actor_net (TrainState): Actor network
-      observations (np.ndarray): Environment observation
-      temperature (float, optional): Temperature parameter. Defaults to 1.0.
+    rng (PRNGKey): RNG
+    actor_net (TrainState): Actor network
+    observations (np.ndarray): Environment observation
+    temperature (float, optional): Temperature parameter. Defaults to 1.0.
 
   Returns:
-      Tuple[PRNGKey, jnp.ndarray]: RNG and actions
+    Tuple[PRNGKey, jnp.ndarray]: RNG and actions
   """
   dist = actor_net.apply_fn(actor_net.params, observations, temperature)
   rng, key = jax.random.split(rng)
