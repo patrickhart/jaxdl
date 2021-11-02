@@ -27,7 +27,7 @@ setup(
 	description=description,
 	long_description=long_description,
 	long_description_content_type='text/markdown',
-	url='https://github.com/patrickahrt/jaxdl',
+	url='https://github.com/patrickhart/jaxdl',
 	author='Patrick Hart',
 	classifiers=[
 		'Development Status :: 3 - Alpha',
