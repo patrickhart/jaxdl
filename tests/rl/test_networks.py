@@ -3,7 +3,9 @@ import numpy as np
 import jax
 from jax import random
 from jaxdl.rl.networks.actor_nets import NormalDistPolicy
+from jaxdl.rl.networks.conv_actor_nets import NormalConvDistPolicy
 from jaxdl.rl.networks.critic_nets import DoubleCriticNetwork
+from jaxdl.rl.networks.conv_critic_nets import DoubleConvCriticNetwork
 from jaxdl.rl.networks.temperature_nets import Temperature
 
 class TestNetworks(unittest.TestCase):
@@ -19,6 +21,19 @@ class TestNetworks(unittest.TestCase):
     sample = out.sample(seed=key)
     self.assertEqual(sample.shape[1], 2)
 
+  def test_conv_actor_net(self):
+    rng = random.PRNGKey(0)
+    rng, key = jax.random.split(rng)
+    N  = 256
+    observations = jax.random.uniform(rng, shape=(1, N, N, 3))
+    actor_net = NormalConvDistPolicy([24, 24], 2)
+    actor_params = actor_net.init(
+      rng, random.uniform(rng, (1, N, N, 3)))
+    out = actor_net.apply(actor_params, observations)
+    rng, key = jax.random.split(rng)
+    sample = out.sample(seed=key)
+    self.assertEqual(sample.shape[1], 2)
+
   def test_critic_net(self):
     observations = np.array([[5., 5., 5.]], dtype=np.float32)
     actions = np.array([[5., 5., 5.]], dtype=np.float32)
@@ -27,6 +42,19 @@ class TestNetworks(unittest.TestCase):
 
     actor_params = critic_net.init(
       rng, random.uniform(rng, (1, 3)), random.uniform(rng, (1, 3)))
+    out = critic_net.apply(actor_params, observations, actions)
+    self.assertEqual(len(out), 2)
+
+  def test_conv_critic_net(self):
+    rng = random.PRNGKey(0)
+    rng, key = jax.random.split(rng)
+    N  = 256
+    observations = jax.random.uniform(key, shape=(1, N, N, 3))
+    actions = jax.random.uniform(key, shape=(1, 1))
+    critic_net = DoubleConvCriticNetwork([24, 24])
+
+    actor_params = critic_net.init(
+      rng, random.uniform(rng, (1, N, N, 3)), random.uniform(rng, (1, 1)))
     out = critic_net.apply(actor_params, observations, actions)
     self.assertEqual(len(out), 2)
 

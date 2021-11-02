@@ -8,19 +8,18 @@ from jaxdl.nn.dnn.mlp import forward_mlp_fn
 def default_init(scale: Optional[float] = jnp.sqrt(2)):
   return nn.initializers.orthogonal(scale)
 
-def forward_conv_mlp_fn(
+def forward_conv_fn(
   hidden_dims: Sequence[int], dropout_rate: Optional[float] = None,
   activations=nn.relu, activate_final=False):
 
   def fn(observations: jnp.ndarray, training: bool = False):
-    return ConvMLPNet(hidden_dims, activate_final=activate_final,
+    return ConvNet(hidden_dims, activate_final=activate_final,
       dropout_rate=dropout_rate, activations=activations)(
       observations, training)
 
   return fn
 
-class ConvMLPNet(nn.Module):
-  mlp_hidden_dims: Sequence[int]
+class ConvNet(nn.Module):
   activations: Callable[[jnp.ndarray], jnp.ndarray] = nn.relu
   activate_final: int = False
   dropout_rate: Optional[float] = None
@@ -40,9 +39,4 @@ class ConvMLPNet(nn.Module):
     x = nn.relu(x)
     x = x.reshape((x.shape[0], -1))
 
-    # call mlp
-    x = self.forward_fn(
-      hidden_dims=self.mlp_hidden_dims, dropout_rate=self.dropout_rate,
-      activate_final=self.activate_final, activations=self.activations)(
-        x, training=training)
     return x
