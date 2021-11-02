@@ -3,7 +3,7 @@
 Clean state-of-the-art JAX/Flax deep learning algorithm implementations:
 
 * Soft-Actor-Critic (SAC) ([arXiv:1812.05905](https://arxiv.org/abs/1812.05905))
-* Twin-Delayed Actor (TD3) ([arXiv:1802.09477](https://arxiv.org/abs/1802.09477))
+* Twin-Delayed DDPG (TD3) ([arXiv:1802.09477](https://arxiv.org/abs/1802.09477))
 * Transformer ([arXiv:1706.03762](https://arxiv.org/abs/1706.03762); planned)
 * Unified Graph Network Blocks ([arXiv:1806.01261](https://arxiv.org/abs/1806.01261); planned)
 
