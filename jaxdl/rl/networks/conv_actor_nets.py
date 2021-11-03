@@ -30,7 +30,7 @@ def create_conv_normal_dist_policy_fn(
     Module: Returns a NormalDistPolicy
   """
   def network_fn(action_dim: int):
-    return NormalDistPolicy(hidden_dims=hidden_dims,
+    return NormalConvDistPolicy(hidden_dims=hidden_dims,
       action_dim=action_dim, forward_fn=forward_fn)
 
   return network_fn
