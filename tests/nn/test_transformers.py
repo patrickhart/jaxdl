@@ -71,7 +71,9 @@ class TestTransformers(unittest.TestCase):
     # [batch, sequence length]
     input = jax.random.randint(key, minval=0, maxval=1, shape=(5, 10))
     transformer_net_params = transformer_net.init(rng, input, rng)
-    result = transformer_net.apply(transformer_net_params, input, key)
+    rng, result = transformer_net.apply(transformer_net_params, input, key)
+    print(np.reshape(result, -1))
+    print(result)
 
 if __name__ == '__main__':
   unittest.main()
