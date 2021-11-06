@@ -26,14 +26,15 @@ class TestNLPUtils(unittest.TestCase):
     rng, key = jax.random.split(rng)
 
     # init
-    source = jax.random.randint(
-      key, minval=0, maxval=1, shape=(1, dataset.block_size))
+    source = jax.random.uniform(
+      key, shape=(1, dataset.block_size), dtype=np.float32)
     transformer_net = create_train_state(
       transformer_net_fn, [rng, source, key], optax.adam(learning_rate=0.001))
     rng, target = transformer_net.apply_fn(transformer_net.params, source, key)
 
     # loss fn
-    new_transformer_net, info = update_transformer(transformer_net, source, target, key)
+    rng, new_transformer_net, info = update_transformer(
+      transformer_net, source, target, key)
     print(info)
 
 if __name__ == '__main__':

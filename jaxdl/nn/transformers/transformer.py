@@ -3,6 +3,7 @@ from typing import Tuple, Callable
 from flax.linen.attention import PRNGKey
 
 import jax
+from jax._src.dtypes import dtype
 import jax.numpy as jnp
 import flax.linen as nn
 from flax import struct
@@ -59,10 +60,13 @@ class Transformer(nn.Module):
   def __call__(self, x: jnp.ndarray, rng: PRNGKey,
     deterministic: bool = False) -> Tuple[PRNGKey, jnp.ndarray]:
 
-    # encoding
+    # learnable encoding
     seq_length = x.shape[1]
+    x_int = x.astype('int32')
     token_embedding = nn.Embed(
-      num_embeddings=self.config.vocab_size, features=self.config.emb_dim)(x)
+      num_embeddings=self.config.vocab_size,
+      features=self.config.emb_dim)(x_int)
+
     # learnable positional encoding
     pos_encoding = self.param('pos_encoding',
       init_fn=lambda _: jax.random.uniform(
@@ -74,6 +78,8 @@ class Transformer(nn.Module):
     x = nn.Dropout(self.config.dropout_rate)(
       token_embedding + position_embeddings,
       deterministic=deterministic, rng=key)
+    x = x.astype(dtype=jnp.float32)
+
     for _ in range(0, self.config.num_layer):
       rng, key = jax.random.split(rng)
       x = TransformerBlock(config=self.config)(x, rng=key)

@@ -12,11 +12,14 @@ from jaxdl.utils.commons import InfoDict, PRNGKey, TrainState
 
 @functools.partial(jax.jit)
 def update_transformer(transformer_net: TrainState, source: jnp.ndarray,
-  target: jnp.ndarray, key: PRNGKey) -> Tuple[TrainState, InfoDict]:
+  target: jnp.ndarray, rng: PRNGKey) -> Tuple[PRNGKey, TrainState, InfoDict]:
+
+  rng, key = jax.random.split(rng)
 
   # temperature loss
   def crossentropy_loss_fn(transformer_params):
-    predictions = transformer_net.apply_fn(transformer_params, source, key)
+    rng, predictions = transformer_net.apply_fn(transformer_params, source, key)
+    print(predictions.dtype, target.dtype)
     crossentropy_loss = softmax_cross_entropy(predictions, target).mean()
     return crossentropy_loss, {
       'crossentropy_loss': crossentropy_loss
@@ -25,4 +28,4 @@ def update_transformer(transformer_net: TrainState, source: jnp.ndarray,
   loss_info, grads = jax.value_and_grad(crossentropy_loss_fn, has_aux=True)(
     transformer_net.params)
   new_transformer_net = transformer_net.apply_gradients(grads=grads)
-  return new_transformer_net, loss_info[1]
+  return rng, new_transformer_net, loss_info[1]
