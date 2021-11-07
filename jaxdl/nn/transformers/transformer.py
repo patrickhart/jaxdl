@@ -7,8 +7,10 @@ from jax._src.dtypes import dtype
 import jax.numpy as jnp
 import flax.linen as nn
 from flax import struct
+from jaxdl.nlp import transformer_fns
 
 from jaxdl.nn.transformers.attention import SelfAttention
+
 
 @struct.dataclass
 class TransformerConfig:
@@ -87,3 +89,10 @@ class Transformer(nn.Module):
     logits = nn.Dense(features=self.config.vocab_size, use_bias=False)(x)
 
     return rng, logits
+
+def create_transformer_fn(transformer_config: TransformerConfig) -> Callable:
+  """Create a transformer network"""
+  def network_fn():
+    return Transformer(transformer_config)
+
+  return network_fn
