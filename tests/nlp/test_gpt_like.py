@@ -15,9 +15,10 @@ class TestNLPUtils(unittest.TestCase):
   def test_text_processing(self):
     text = "Hello there. How are you?! good, very good?"
     dataset = CharDataset(data=text, block_size=10)
-
+    # very small config
     transformer_config = TransformerConfig(
-      vocab_size=dataset.vocab_size, block_size=dataset.block_size)
+      vocab_size=dataset.vocab_size, block_size=dataset.block_size,
+      num_layer=2, num_head=2, emb_dim=16)
     transformer_net_fn = Transformer(transformer_config)
     rng = jax.random.PRNGKey(0)
     rng, key = jax.random.split(rng)
@@ -34,13 +35,15 @@ class TestNLPUtils(unittest.TestCase):
     rng, new_transformer_net, info = update_transformer(
       transformer_net, source, target, key)
 
-
   def test_gpt_like_transformer(self):
     rng = jax.random.PRNGKey(0)
     text = "Hello there. How are you?! good, very good?"
+
     dataset = CharDataset(data=text, block_size=10)
+    # very small config
     transformer_config = TransformerConfig(
-      vocab_size=dataset.vocab_size, block_size=dataset.block_size)
+      vocab_size=dataset.vocab_size, block_size=dataset.block_size,
+      num_layer=2, num_head=2, emb_dim=16)
 
     gpt = GPTLike(0, transformer_config)
     source, target = dataset.get_sampled_batch(rng, 10)
@@ -48,7 +51,6 @@ class TestNLPUtils(unittest.TestCase):
     # train step
     gpt.update(source, target)
 
-    # TODO: sample
     # gpt.sample()
 
 

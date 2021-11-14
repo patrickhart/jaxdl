@@ -37,7 +37,7 @@ class GPTLike:
     inp = jax.random.uniform(
       rng, shape=(1, transformer_config.block_size), dtype=np.float32)
     transformer_net = create_train_state(
-      transformer_net_fn(transformer_config), [rng, inp, transformer_key],
+      transformer_net_fn(transformer_config)(), [rng, inp, transformer_key],
       optax.adam(learning_rate=transformer_lr))
 
     # networks

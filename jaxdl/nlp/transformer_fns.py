@@ -16,7 +16,7 @@ def compute_cross_entropy(logits: jnp.ndarray, targets: jnp.ndarray):
   """Compute cross entropy"""
   vocab_size = logits.shape[-1]
   soft_targets = common_utils.onehot(
-    targets, vocab_size, on_value=1., off_value=0)
+    targets, vocab_size, on_value=1., off_value=0.)
   loss = -jnp.sum(soft_targets * nn.log_softmax(logits), axis=-1)
   return loss.sum()
 
